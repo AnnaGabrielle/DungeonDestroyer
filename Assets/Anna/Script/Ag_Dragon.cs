@@ -9,6 +9,8 @@ public class Ag_Dragon : MonoBehaviour {
 	
 	public AudioClip audio_deathDragon =null;
 	public AudioClip audio_DragonKill=null;
+
+	[SerializeField] ParticleSystem ag_dragonDeathParticle;
 	AudioSource ag_audioSource;
 
 	// Use this for initialization
@@ -23,6 +25,7 @@ public class Ag_Dragon : MonoBehaviour {
 		if(hasSword){ //element 1
 			ag_audioSource.PlayOneShot(audio_deathDragon);
 			dragon_anim.Play("sj001_die");
+			ag_dragonDeathParticle.Play();
 			Destroy(gameObject, 3.5f);
 			//soundeffect
 			//particles

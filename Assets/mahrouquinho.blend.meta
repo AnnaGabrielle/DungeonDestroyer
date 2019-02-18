@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e674533009496c34cae09a99584b6c30
+guid: ddf60c7e7d9fe914ea972d1d46245982
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
@@ -151,8 +151,7 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: "Invalid Avatar Rig Configuration. Missing or invalid transform:\n\tRequired
-      human bone 'LeftFoot' not found\n"
+    rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 

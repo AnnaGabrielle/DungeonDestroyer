@@ -7,29 +7,35 @@ public class Ag_Character : MonoBehaviour {
 
 	string ag_NextScenename = "Level 3";
 	float ag_speed = .15f;
-	AudioSource audioStep;
+	AudioSource ag_audioSource;
 	Animator ag_anim;
 	Rigidbody ag_playerRigidbody;
     float ag_rotationSpeed = 180f;
 	bool ag_hasSword;
 	public GameObject ag_theSword;
 	public GameObject ag_theSword_avatar;
-	public AudioClip audio_gotItem = null;
-	public AudioClip audio_Died;
-	public AudioClip audio_win;
+	public AudioClip ag_audio_gotItem = null;
+	public AudioClip ag_audio_Died;
+	public AudioClip ag_audio_win;
+	public AudioClip ag_audio_step;
 	public string ag_WalkingAxis = "Vertical";
 	public string ag_WalkingRotation = "Horizontal"; 
 
-	enum AG_CharacterState{Alive, Dead};
+	AudioSource ag_mainCamera_audio;
+
+	enum AG_CharacterState{Alive, Dead, Win};
 	AG_CharacterState ag_CharacterState = AG_CharacterState.Alive;
+	[SerializeField] ParticleSystem ag_WinParticle1;
+	[SerializeField] ParticleSystem ag_WinParticle2;
 
 	void Awake(){
 		ag_anim = GetComponent<Animator>();
 		ag_playerRigidbody = GetComponent<Rigidbody>();
-		audioStep = GetComponent<AudioSource>();
+		ag_audioSource = GetComponent<AudioSource>();
 		ag_hasSword = false;
 		ag_theSword.SetActive(true);
 		ag_theSword_avatar.SetActive(false);
+
 	}
 
 	void FixedUpdate(){
@@ -56,14 +62,14 @@ public class Ag_Character : MonoBehaviour {
 		bool walking = h!= 0f || v!=0f;
 		ag_anim.SetBool("IsWalking", walking);
 		if(walking){
-			if (!audioStep.isPlaying) //doesnt layer
+			if (!ag_audioSource.isPlaying) //doesnt layer
              {
-                 audioStep.Play();
+                 ag_audioSource.PlayOneShot(ag_audio_step);
              }
          }
          else
          {
-             audioStep.Stop();
+             ag_audioSource.Stop();
 	     }
 	}
 
@@ -71,7 +77,7 @@ public class Ag_Character : MonoBehaviour {
         switch (collision.gameObject.tag)
         {
             case "Anna_Sword":
-				audioStep.PlayOneShot(audio_gotItem);
+				ag_audioSource.PlayOneShot(ag_audio_gotItem);
 				ag_hasSword = true;
 				ag_theSword.SetActive(false);
 				ag_theSword_avatar.SetActive(true);
@@ -80,8 +86,11 @@ public class Ag_Character : MonoBehaviour {
 
             case "Anna_Ending":
 				//LoadTheScene("Level 4");
-				audioStep.PlayOneShot(audio_win);
-				//sparkles
+				ag_audioSource.PlayOneShot(ag_audio_win);
+				ag_WinParticle2.Play();
+				ag_WinParticle1.Play();
+				ag_CharacterState = AG_CharacterState.Win;
+				ag_anim.SetBool("IsWalking", false);
 				//message
 				//next scene
                 print("Win");
@@ -115,21 +124,21 @@ public class Ag_Character : MonoBehaviour {
 
 	public void Ag_CharacterDie(){
 		ag_CharacterState = AG_CharacterState.Dead;
-		audioStep.Stop();
-		audioStep.PlayOneShot(audio_Died);
+		ag_audioSource.Stop();
+		ag_audioSource.PlayOneShot(ag_audio_Died);
 		Invoke("LoadTheScene", 2f);
 		ag_anim.SetTrigger("Die");
 	}
 
 	public void Ag_CharacterDieWithDragon(){
 		ag_CharacterState = AG_CharacterState.Dead;
-		audioStep.Stop();
+		ag_audioSource.Stop();
 		Invoke("Ag_PlayMusic_and_animation", 0.5f);
 		Invoke("LoadTheScene", 3f);
 	}
 
 	public void Ag_PlayMusic_and_animation(){
-		audioStep.PlayOneShot(audio_Died);
+		ag_audioSource.PlayOneShot(ag_audio_Died);
 		ag_anim.SetTrigger("Die");
 	}
 
