@@ -108,6 +108,9 @@ public class Ag_Character : MonoBehaviour {
 				Ag_CharacterDie();
 				print("Die");
 				break;
+			case "Anna_Minion":
+				Ag_CharacterDieMinion();
+				break;
 			default:
 				break;
         }
@@ -139,6 +142,14 @@ public class Ag_Character : MonoBehaviour {
 
 	public void Ag_PlayMusic_and_animation(){
 		ag_audioSource.PlayOneShot(ag_audio_Died);
+		ag_anim.SetTrigger("Die");
+	}
+
+	public void Ag_CharacterDieMinion(){
+		ag_CharacterState = AG_CharacterState.Dead;
+		ag_audioSource.Stop();
+		ag_audioSource.PlayOneShot(ag_audio_Died);
+		Invoke("LoadTheScene", 2f);
 		ag_anim.SetTrigger("Die");
 	}
 
