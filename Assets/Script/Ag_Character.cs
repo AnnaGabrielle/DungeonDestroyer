@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class Ag_Character : MonoBehaviour {
 
 	string ag_NextScenename = "Level 3";
+	string ag_VictoryScenename = "Before Level 3";
 	float ag_speed = .15f;
 	AudioSource ag_audioSource;
 	Animator ag_anim;
@@ -19,7 +20,11 @@ public class Ag_Character : MonoBehaviour {
 	public AudioClip ag_audio_win;
 	public AudioClip ag_audio_step;
 	public string ag_WalkingAxis = "Vertical";
-	public string ag_WalkingRotation = "Horizontal"; 
+	public string ag_WalkingRotation = "Horizontal";
+	
+	GameObject ag_BackgroundMusic;
+	AudioSource ag_backMusic;
+
 
 	AudioSource ag_mainCamera_audio;
 
@@ -35,7 +40,9 @@ public class Ag_Character : MonoBehaviour {
 		ag_hasSword = false;
 		ag_theSword.SetActive(true);
 		ag_theSword_avatar.SetActive(false);
-
+		ag_BackgroundMusic = GameObject.FindGameObjectWithTag("Anna_BackMusic");
+		ag_backMusic = ag_BackgroundMusic.GetComponent<AudioSource>();
+		ag_backMusic.Play();
 	}
 
 	void FixedUpdate(){
@@ -85,20 +92,19 @@ public class Ag_Character : MonoBehaviour {
                 break;
 
             case "Anna_Ending":
-				//LoadTheScene("Level 4");
 				ag_audioSource.PlayOneShot(ag_audio_win);
 				ag_WinParticle2.Play();
 				ag_WinParticle1.Play();
 				ag_CharacterState = AG_CharacterState.Win;
 				ag_anim.SetBool("IsWalking", false);
-				//message
-				//next scene
-                print("Win");
+				ag_backMusic.Stop();
+				Invoke("LoadTheScene_Win", 8f);
+                //print("Win");
                 break;
 			case "Anna_Dragon":
 				if(ag_hasSword){
 					//can go
-					print("Keep going");
+					//print("Keep going");
 				}
 				else{
 					Ag_CharacterDieWithDragon();
@@ -106,7 +112,7 @@ public class Ag_Character : MonoBehaviour {
 				break;
 			case "Anna_Hazard":
 				Ag_CharacterDie();
-				print("Die");
+				//print("Die");
 				break;
 			case "Anna_Minion":
 				Ag_CharacterDieMinion();
@@ -119,6 +125,10 @@ public class Ag_Character : MonoBehaviour {
 
 	private void LoadTheScene(){
 		SceneManager.LoadScene(ag_NextScenename, LoadSceneMode.Single);
+	}
+
+	private void LoadTheScene_Win(){
+		SceneManager.LoadScene(ag_VictoryScenename, LoadSceneMode.Single);
 	}
 
 	public bool Ag_Get_hasSword(){
